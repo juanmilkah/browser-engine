@@ -219,4 +219,24 @@ mod tests {
             }
         )
     }
+
+    #[test]
+    fn parsing_element_attrs() {
+        let source = "<h1 id='hello'>Hello world</h1>".to_string();
+        let root = parse(source);
+
+        assert_eq!(
+            root,
+            Node {
+                children: vec![Node {
+                    children: vec![],
+                    node_type: NodeType::Text("Hello world".to_string()),
+                },],
+                node_type: NodeType::Element(ElementData {
+                    tag_name: "h1".to_string(),
+                    attrs: HashMap::from([("id".to_string(), "hello".to_string()),]),
+                })
+            }
+        )
+    }
 }
