@@ -1,16 +1,19 @@
 use std::collections::HashMap;
 
 //dom module
+#[derive(Debug, PartialEq)]
 pub struct Node {
     pub children: Vec<Node>,
     pub node_type: NodeType,
 }
 
+#[derive(Debug, PartialEq)]
 pub enum NodeType {
     Text(String),
     Element(ElementData),
 }
 
+#[derive(Debug, PartialEq)]
 pub struct ElementData {
     pub tag_name: String,
     pub attrs: AttrMap,
@@ -173,5 +176,47 @@ pub fn parse(source: String) -> Node {
         nodes.remove(0)
     } else {
         Node::elem("html".to_string(), HashMap::new(), nodes)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tests_work() {
+        assert_eq!(true, true);
+    }
+
+    #[test]
+    fn parsing_text() {
+        let text = "hello world".to_string();
+        let root = parse(text.clone());
+        assert_eq!(
+            root,
+            Node {
+                children: vec![],
+                node_type: NodeType::Text(text),
+            }
+        )
+    }
+
+    #[test]
+    fn parsing_element_nodes() {
+        let source = "<h1>hello world</h1>".to_string();
+        let root = parse(source);
+        assert_eq!(
+            root,
+            Node {
+                children: vec![Node {
+                    children: vec![],
+                    node_type: NodeType::Text("hello world".to_string()),
+                },],
+                node_type: NodeType::Element(ElementData {
+                    tag_name: "h1".to_string(),
+                    attrs: HashMap::new()
+                })
+            }
+        )
     }
 }
